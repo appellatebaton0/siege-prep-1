@@ -1,0 +1,47 @@
+[gd_scene load_steps=11 format=3 uid="uid://dgu365ubfha5h"]
+
+[ext_resource type="Script" uid="uid://dwh0yifrqxhcp" path="res://scripts/actor.gd" id="1_7wueq"]
+[ext_resource type="PackedScene" uid="uid://dnd4kisf8wjau" path="res://scenes/components/cp_sprite.tscn" id="1_ktjr4"]
+[ext_resource type="PackedScene" uid="uid://byojuvig761hd" path="res://scenes/components/cp_motion.tscn" id="2_7wueq"]
+[ext_resource type="PackedScene" uid="uid://cfhfudk7fnj6v" path="res://scenes/components/cp_hurtbox.tscn" id="2_8y416"]
+[ext_resource type="Script" uid="uid://t23ay2yfroa1" path="res://scripts/motion_states/cms_float.gd" id="3_oomub"]
+[ext_resource type="PackedScene" uid="uid://brxmk6g3pq4d7" path="res://scenes/components/cp_respawn.tscn" id="6_8y416"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7860b"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7wueq"]
+size = Vector2(16, 16)
+
+[sub_resource type="Gradient" id="Gradient_8y416"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7860b"]
+gradient = SubResource("Gradient_8y416")
+width = 16
+height = 16
+
+[node name="Player" type="Node2D" groups=["Actors"]]
+script = ExtResource("1_7wueq")
+
+[node name="CP_Hurtbox" parent="." instance=ExtResource("2_8y416")]
+collision_layer = 2
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CP_Hurtbox"]
+shape = SubResource("RectangleShape2D_7860b")
+
+[node name="CP_Motion" parent="." instance=ExtResource("2_7wueq")]
+collision_layer = 2
+
+[node name="CMS_Float" type="Node" parent="CP_Motion"]
+script = ExtResource("3_oomub")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CP_Motion"]
+shape = SubResource("RectangleShape2D_7wueq")
+
+[node name="CP_Sprite" parent="." instance=ExtResource("1_ktjr4")]
+texture = SubResource("GradientTexture2D_7860b")
+
+[node name="CP_Respawn" parent="." instance=ExtResource("6_8y416")]
+
+[connection signal="got_hurt" from="CP_Hurtbox" to="CP_Respawn" method="respawn"]

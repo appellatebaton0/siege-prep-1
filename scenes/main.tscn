@@ -1,0 +1,77 @@
+[gd_scene load_steps=12 format=3 uid="uid://chm3si0nicqxd"]
+
+[ext_resource type="PackedScene" uid="uid://dgu365ubfha5h" path="res://scenes/actors/player.tscn" id="1_o5qli"]
+[ext_resource type="PackedScene" uid="uid://kek6tefk2fpk" path="res://scenes/actors/enemy.tscn" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://dwh0yifrqxhcp" path="res://scripts/actor.gd" id="3_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://dgw1cdcm2loma" path="res://scenes/components/cp_hitbox.tscn" id="4_tbgi4"]
+[ext_resource type="PackedScene" uid="uid://ctvjgw7gos24a" path="res://scenes/components/cp_spawner.tscn" id="5_tefeu"]
+[ext_resource type="Script" uid="uid://ctwtre00simba" path="res://scripts/spawner_components/osc_random.gd" id="6_o6xl0"]
+[ext_resource type="Script" uid="uid://binbd161k73og" path="res://scripts/spawner_components/tsc_manual.gd" id="7_o6xl0"]
+[ext_resource type="Script" uid="uid://dyqbcydvdq6hv" path="res://scripts/spawner_components/spawn_transform.gd" id="8_tipki"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tefeu"]
+size = Vector2(116, 535)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyhfs"]
+size = Vector2(792, 137.5)
+
+[sub_resource type="Resource" id="Resource_85g3d"]
+script = ExtResource("8_tipki")
+global_position = Vector2(0, 0)
+rotation = 90.0
+initial_velocity = Vector2(300, 0)
+metadata/_custom_type_script = "uid://dyqbcydvdq6hv"
+
+[node name="Main" type="Node2D" groups=["Main"]]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+
+[node name="Player" parent="." instance=ExtResource("1_o5qli")]
+position = Vector2(-45, -4)
+
+[node name="Enemy" parent="." instance=ExtResource("2_0wfyh")]
+position = Vector2(-192, 29)
+
+[node name="Environment" type="Node2D" parent="." groups=["Actors"]]
+script = ExtResource("3_jyhfs")
+
+[node name="CP_Hitbox" parent="Environment" instance=ExtResource("4_tbgi4")]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/CP_Hitbox"]
+position = Vector2(347, 22.5)
+shape = SubResource("RectangleShape2D_tefeu")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Environment/CP_Hitbox"]
+position = Vector2(-346, 32)
+shape = SubResource("RectangleShape2D_tefeu")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Environment/CP_Hitbox"]
+position = Vector2(-8, 230.75)
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Environment/CP_Hitbox"]
+position = Vector2(-5, -229)
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="TestSpawner" type="Node2D" parent="."]
+script = ExtResource("3_jyhfs")
+metadata/_custom_type_script = "uid://dwh0yifrqxhcp"
+
+[node name="CP_Spawner" parent="TestSpawner" instance=ExtResource("5_tefeu")]
+spawn_limit = -1
+auto_spawn = true
+spawn_interval = 0.2
+
+[node name="OSC_Random" type="Node" parent="TestSpawner/CP_Spawner"]
+script = ExtResource("6_o6xl0")
+options = Array[PackedScene]([ExtResource("2_0wfyh")])
+metadata/_custom_type_script = "uid://ctwtre00simba"
+
+[node name="TSC_Manual" type="Node" parent="TestSpawner/CP_Spawner"]
+script = ExtResource("7_o6xl0")
+transform = SubResource("Resource_85g3d")
+inherit_spawner_position = true
+metadata/_custom_type_script = "uid://binbd161k73og"

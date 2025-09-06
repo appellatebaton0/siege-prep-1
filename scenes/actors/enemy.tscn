@@ -1,0 +1,37 @@
+[gd_scene load_steps=9 format=3 uid="uid://kek6tefk2fpk"]
+
+[ext_resource type="Script" uid="uid://dwh0yifrqxhcp" path="res://scripts/actor.gd" id="1_a2f0v"]
+[ext_resource type="PackedScene" uid="uid://byojuvig761hd" path="res://scenes/components/cp_motion.tscn" id="1_qkj82"]
+[ext_resource type="PackedScene" uid="uid://dnd4kisf8wjau" path="res://scenes/components/cp_sprite.tscn" id="2_35asm"]
+[ext_resource type="PackedScene" uid="uid://bn18efytxvbkl" path="res://scenes/components/cp_knockback.tscn" id="5_ei073"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a2f0v"]
+size = Vector2(8, 8)
+
+[sub_resource type="Gradient" id="Gradient_ei073"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_iq6g4"]
+gradient = SubResource("Gradient_ei073")
+width = 8
+height = 8
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iq6g4"]
+size = Vector2(8, 8)
+
+[node name="Enemy" type="Node2D" groups=["Actors"]]
+script = ExtResource("1_a2f0v")
+
+[node name="CP_Motion" parent="." instance=ExtResource("1_qkj82")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CP_Motion"]
+shape = SubResource("RectangleShape2D_a2f0v")
+
+[node name="CP_Sprite" parent="." instance=ExtResource("2_35asm")]
+texture = SubResource("GradientTexture2D_iq6g4")
+
+[node name="CP_Knockback" parent="." instance=ExtResource("5_ei073")]
+collision_mask = 2
+amount = 300.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CP_Knockback"]
+shape = SubResource("RectangleShape2D_iq6g4")

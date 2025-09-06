@@ -1,9 +1,11 @@
 extends Component
 class_name SpawnerComponent
-var me:Node = get_me()
+var me:Node2D = get_me()
 
 @onready var options_component:OptionsSpawnerComponent
-@onready var transform_component:TransformSpawnerComponent
+@onready var position_component:PositionSpawnerComponent
+@onready var rotation_component:RotationSpawnerComponent
+@onready var velocity_component:VelocitySpawnerComponent
 
 @export var spawn_limit:int = 0 ## How many actors this spawner can create at maximum (-1 = infinite)
 var spawned_so_far:int = 0
@@ -15,8 +17,12 @@ func _ready() -> void:
 	for child in get_children():
 		if child is OptionsSpawnerComponent:
 			options_component = child
-		elif child is TransformSpawnerComponent:
-			transform_component = child
+		elif child is VelocitySpawnerComponent:
+			velocity_component = child
+		elif child is RotationSpawnerComponent:
+			rotation_component = child
+		elif child is PositionSpawnerComponent:
+			position_component = child
 
 func get_actor_motion_component(from:Actor) -> MotionComponent:
 	for component in from.get_components():
@@ -27,17 +33,21 @@ func get_actor_motion_component(from:Actor) -> MotionComponent:
 func spawn():
 	for options in options_component.get_options():
 		var new:Actor = options.instantiate()
-		var transform:SpawnTransform = transform_component.get_transform()
+		
+		## Get transform
+		var global_position:Vector2 = position_component.get_position() if position_component != null else me.global_position
+		var rotation:float   = deg_to_rad(rotation_component.get_rotation()) if rotation_component != null else 0.0
+		var velocity:Vector2 = velocity_component.get_velocity() if velocity_component != null else Vector2.ZERO
 
 		Global.world.add_child(new)
 		
 		# Apply position & rotation
-		new.global_position = transform.global_position
-		new.rotation = deg_to_rad(transform.rotation)
+		new.global_position = global_position
+		new.rotation = rotation
 		
 		# Apply initial velocity (or attempt to)
 		if get_actor_motion_component(new) != null:
-			get_actor_motion_component(new).me.velocity = transform.initial_velocity
+			get_actor_motion_component(new).me.velocity = velocity.rotated(rotation)
 
 func _process(delta: float) -> void:
 	if auto_spawn:

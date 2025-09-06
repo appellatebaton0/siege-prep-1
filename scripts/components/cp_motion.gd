@@ -46,3 +46,6 @@ func _physics_process(delta: float) -> void:
 	# Apply the velocity to the actor instead of the component
 	actor.global_position = me.global_position
 	me.position = Vector2.ZERO
+
+func _on_respawned():
+	me.velocity = Vector2.ZERO
